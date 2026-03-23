@@ -17,6 +17,9 @@ import {
   ChevronUp,
   Copy,
   Check,
+  CheckCircle,
+  ArrowRight,
+  Share2,
   RefreshCw,
   Image as ImageIcon,
   MoreHorizontal,
@@ -683,7 +686,205 @@ const GRADIENTS = [
 
 // --- Components ---
 
+const LandingPage = ({ onStart }: { onStart: () => void }) => {
+  return (
+    <div className="min-h-screen bg-[#fafafa] text-[#171717] font-sans overflow-x-hidden">
+      {/* Hero Section */}
+      <header className="relative px-6 py-12 lg:py-24 max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
+        <div className="space-y-8 z-10">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-xs font-bold uppercase tracking-wider">
+            <Sparkles className="w-3 h-3" />
+            <span>Social Splitter V1</span>
+          </div>
+          
+          <h1 className="text-6xl lg:text-8xl font-black tracking-tighter leading-[0.85] uppercase italic">
+            Split. <br />
+            Style. <br />
+            <span className="text-indigo-600">Share.</span>
+          </h1>
+          
+          <p className="text-lg text-gray-500 max-w-md font-medium leading-relaxed">
+            Transform your long-form thoughts into perfectly sized 3:4 social media cards. Designed for creators who value aesthetics and clarity.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 pt-4">
+            <button 
+              onClick={onStart}
+              className="flex items-center justify-center gap-2 px-8 py-4 bg-[#171717] text-white rounded-2xl font-bold text-lg hover:bg-gray-800 transition-all group"
+            >
+              Get Started
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </button>
+            <div className="flex items-center gap-4 px-6 text-gray-400 font-bold text-sm">
+              <div className="flex -space-x-2">
+                {[1, 2, 3].map(i => (
+                  <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-gray-200 overflow-hidden">
+                    <img src={`https://picsum.photos/seed/user${i}/100/100`} alt="user" referrerPolicy="no-referrer" />
+                  </div>
+                ))}
+              </div>
+              <span>Join 2,000+ creators</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="relative">
+          <div className="absolute -top-20 -right-20 w-64 h-64 bg-indigo-100 rounded-full blur-3xl opacity-50" />
+          <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-rose-100 rounded-full blur-3xl opacity-50" />
+          
+          <div className="relative grid grid-cols-2 gap-4 rotate-3 scale-110">
+            <div className="space-y-4 translate-y-8">
+              <div className="aspect-[3/4] bg-indigo-600 rounded-2xl shadow-2xl flex items-center justify-center p-6 text-white text-center italic font-black text-xl">
+                "The best way to predict the future is to create it."
+              </div>
+              <div className="aspect-[3/4] bg-white border-2 border-gray-100 rounded-2xl shadow-xl flex items-center justify-center p-6 text-gray-900 text-center font-serif italic text-lg">
+                Minimalism is not a lack of something. It's simply the perfect amount of something.
+              </div>
+            </div>
+            <div className="space-y-4">
+              <div className="aspect-[3/4] bg-[#171717] rounded-2xl shadow-2xl flex items-center justify-center p-6 text-white text-center font-mono text-sm">
+                01 // THE PROCESS IS THE PRODUCT.
+              </div>
+              <div className="aspect-[3/4] bg-rose-500 rounded-2xl shadow-xl flex items-center justify-center p-6 text-white text-center font-black uppercase text-2xl leading-none">
+                BOLD <br /> MOVES <br /> ONLY
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Features Section */}
+      <section className="bg-white py-24 border-y border-gray-100">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center max-w-2xl mx-auto mb-20 space-y-4">
+            <h2 className="text-4xl font-black uppercase italic tracking-tight">Powerful Features</h2>
+            <p className="text-gray-500 font-medium">Everything you need to create viral social content in seconds.</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-12">
+            {[
+              {
+                icon: <Scissors className="w-8 h-8 text-indigo-600" />,
+                title: "Smart Splitting",
+                desc: "Automatically split long text by character limit or use custom separators for perfect control."
+              },
+              {
+                icon: <Palette className="w-8 h-8 text-rose-500" />,
+                title: "Visual Themes",
+                desc: "Choose from curated themes or build your own with custom gradients, fonts, and borders."
+              },
+              {
+                icon: <Download className="w-8 h-8 text-emerald-500" />,
+                title: "Instant Export",
+                desc: "Export all your cards as high-quality PNGs ready for Instagram, Twitter, or LinkedIn."
+              },
+              {
+                icon: <Sparkles className="w-8 h-8 text-amber-500" />,
+                title: "Decorative Elements",
+                desc: "Add icons, patterns, and shapes to give your cards a unique, professional touch."
+              },
+              {
+                icon: <Type className="w-8 h-8 text-violet-500" />,
+                title: "Typography Control",
+                desc: "Fine-tune every aspect of your text: size, tracking, leading, and alignment."
+              },
+              {
+                icon: <Share2 className="w-8 h-8 text-sky-500" />,
+                title: "Social Ready",
+                desc: "Cards are perfectly sized at 3:4 ratio, optimized for the best engagement on mobile."
+              }
+            ].map((feature, i) => (
+              <div key={i} className="space-y-4 group">
+                <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                  {feature.icon}
+                </div>
+                <h3 className="text-xl font-bold">{feature.title}</h3>
+                <p className="text-gray-500 font-medium leading-relaxed">{feature.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How it works */}
+      <section className="py-24 bg-[#fafafa]">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid lg:grid-cols-2 gap-24 items-center">
+            <div className="space-y-12">
+              <h2 className="text-5xl font-black uppercase italic tracking-tight leading-none">
+                How it <br /> <span className="text-indigo-600">works.</span>
+              </h2>
+              
+              <div className="space-y-8">
+                {[
+                  { step: "01", title: "Paste your content", desc: "Drop your long-form text into the editor. It can be a blog post, a thread, or just a random thought." },
+                  { step: "02", title: "Choose your split", desc: "Decide how you want to break it up. Use our smart character limit or add your own separators." },
+                  { step: "03", title: "Style your cards", desc: "Apply themes, change fonts, add gradients, and decorative elements until it looks perfect." },
+                  { step: "04", title: "Download & Share", desc: "Hit export and get a zip file with all your cards. Post them and watch the engagement grow." }
+                ].map((item, i) => (
+                  <div key={i} className="flex gap-6">
+                    <span className="text-3xl font-black text-indigo-100 italic">{item.step}</span>
+                    <div className="space-y-1">
+                      <h4 className="text-lg font-bold">{item.title}</h4>
+                      <p className="text-gray-500 font-medium">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-white p-8 rounded-[32px] shadow-2xl border border-gray-100">
+              <div className="space-y-6">
+                <div className="flex items-center gap-4 border-b border-gray-100 pb-6">
+                  <div className="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-bold">SS</div>
+                  <div>
+                    <div className="font-bold">Social Splitter Editor</div>
+                    <div className="text-xs text-gray-400 font-medium">v1.0.0 • Active Session</div>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <div className="h-4 bg-gray-100 rounded-full w-3/4" />
+                  <div className="h-4 bg-gray-100 rounded-full w-full" />
+                  <div className="h-4 bg-gray-100 rounded-full w-1/2" />
+                  <div className="grid grid-cols-2 gap-4 pt-4">
+                    <div className="h-32 bg-indigo-50 rounded-2xl border-2 border-indigo-100 border-dashed" />
+                    <div className="h-32 bg-rose-50 rounded-2xl border-2 border-rose-100 border-dashed" />
+                  </div>
+                </div>
+                <button 
+                  onClick={onStart}
+                  className="w-full py-4 bg-[#171717] text-white rounded-2xl font-bold flex items-center justify-center gap-2"
+                >
+                  Enter Editor
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-12 border-t border-gray-100 text-center text-gray-400 text-sm font-bold uppercase tracking-widest">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-indigo-600" />
+            <span>Social Splitter V1</span>
+          </div>
+          <div className="flex gap-8">
+            <a href="#" className="hover:text-indigo-600 transition-colors">Twitter</a>
+            <a href="#" className="hover:text-indigo-600 transition-colors">Instagram</a>
+            <a href="#" className="hover:text-indigo-600 transition-colors">GitHub</a>
+          </div>
+          <div>© 2026 All Rights Reserved</div>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
 export default function App() {
+  const [showLanding, setShowLanding] = useState(true);
   const [text, setText] = useState('');
   const [splitMode, setSplitMode] = useState<SplitMode>('separator');
   const [charLimit, setCharLimit] = useState(280);
@@ -863,18 +1064,39 @@ export default function App() {
       elementSeed: Math.floor(Math.random() * 1000),
     };
     setStyle(newStyle);
+
+    // Sequential refresh: increase font size by 1px after randomization is done
+    setTimeout(() => {
+      setStyle(prev => ({
+        ...prev,
+        fontSize: prev.fontSize + 1
+      }));
+    }, 50);
   };
+
+  if (showLanding) {
+    return <LandingPage onStart={() => setShowLanding(false)} />;
+  }
 
   return (
     <div className="flex h-screen bg-[#f8f9fa] text-[#1a1a1a] font-sans overflow-hidden">
       {/* Sidebar */}
       <aside className="w-80 border-r border-gray-200 bg-white flex flex-col overflow-y-auto shrink-0">
         <div className="p-6 border-b border-gray-100">
-          <div className="flex items-center gap-2 mb-1">
-            <div className="p-2 bg-indigo-600 rounded-lg shadow-lg shadow-indigo-100">
-              <Scissors className="w-5 h-5 text-white" />
+          <div className="flex items-center justify-between mb-1">
+            <div className="flex items-center gap-2">
+              <div className="p-2 bg-indigo-600 rounded-lg shadow-lg shadow-indigo-100">
+                <Scissors className="w-5 h-5 text-white" />
+              </div>
+              <h1 className="text-xl font-bold tracking-tight">Social Splitter</h1>
             </div>
-            <h1 className="text-xl font-bold tracking-tight">Social Splitter</h1>
+            <button 
+              onClick={() => setShowLanding(true)}
+              className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
+              title="Return to Home"
+            >
+              <Home className="w-4 h-4" />
+            </button>
           </div>
           <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Content Creator Tool</p>
         </div>
