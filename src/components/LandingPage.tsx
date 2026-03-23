@@ -63,7 +63,7 @@ export const LandingPage = ({ onStart }: { onStart: () => void }) => {
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
             <button 
               onClick={onStart}
-              className="flex items-center justify-center gap-2 px-8 py-4 bg-yellow-400 text-black rounded-2xl font-bold text-lg hover:bg-yellow-500 transition-all group shadow-lg shadow-yellow-100"
+              className="flex items-center justify-center gap-2 px-8 py-4 px-12 bg-yellow-400 text-black rounded-2xl font-bold text-lg hover:bg-yellow-500 transition-all group shadow-lg shadow-yellow-100"
             >
               {t('get_started')}
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />

@@ -80,7 +80,11 @@ export const Sidebar = ({
                 )}
                 title="English"
               >
-                <span className="text-sm text-white">🇬🇧</span>
+                      <img 
+                src="/assets/uk_flag.png" 
+                alt="UK flag" 
+                className="w-6 h-6 object-contain"
+              />
               </button>
               <button
                 onClick={() => setLanguage('pt')}
@@ -90,7 +94,11 @@ export const Sidebar = ({
                 )}
                 title="Português (Brasil)"
               >
-                <span className="text-sm text-white">🇧🇷</span>
+              <img 
+                src="/assets/brazil_flag.png" 
+                alt="Brazil flag" 
+                className="w-6 h-6 object-contain"
+              />
               </button>
             </div>
             <button 
@@ -852,7 +860,7 @@ export const Sidebar = ({
           <Download className="w-5 h-5" />
           {t('export_cards', { count: cards.length })}
         </button>
-        <p className="text-[10px] text-center text-gray-400 font-medium mt-3">
+        <p className="text-[10px] text-center text-black-400 font-medium mt-3">
           {t('export_description')}
         </p>
       </div>
