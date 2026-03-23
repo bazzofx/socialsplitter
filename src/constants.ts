@@ -119,7 +119,6 @@ export const DECORATIVE_ELEMENTS = [
   { name: 'Save', value: 'Save' },
   { name: 'Scale', value: 'Scale' },
   { name: 'Scan', value: 'Scan' },
-  { name: 'Scissors', value: 'Scissors' },
   { name: 'Scroll', value: 'Scroll' },
   { name: 'Search', value: 'Search' },
   { name: 'Send', value: 'Send' },

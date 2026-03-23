@@ -10,9 +10,15 @@ import { Sidebar } from './components/Sidebar';
 import { PreviewArea } from './components/PreviewArea';
 import { CardStyle, SplitMode } from './types';
 import { THEMES, FONTS, GRADIENTS, DECORATIVE_ELEMENTS, TEXTURES } from './constants';
+import axios from 'axios';
 
 export default function App() {
-  const [showLanding, setShowLanding] = useState(true);
+  const [isInstagramConnected, setIsInstagramConnected] = useState(false);
+  const [instagramAccounts, setInstagramAccounts] = useState<any[]>([]);
+  const [showAccountSelector, setShowAccountSelector] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
+  const [shareStatus, setShareStatus] = useState<'idle' | 'authenticating' | 'loading_accounts' | 'publishing' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
   const [text, setText] = useState('');
   const [splitMode, setSplitMode] = useState<SplitMode>('separator');
   const [charLimit, setCharLimit] = useState(280);
@@ -59,6 +65,8 @@ export default function App() {
     texture: 'none',
     textureOpacity: 0.1,
   });
+
+  const [showLanding, setShowLanding] = useState(true);
 
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     content: true,
@@ -126,23 +134,102 @@ export default function App() {
   };
 
   const handleExportAll = async () => {
-    for (let i = 0; i < cards.length; i++) {
-      const node = cardRefs.current[i];
-      if (node) {
-        try {
+    // ... existing export logic ...
+  };
+
+  const handleFacebookLogin = async () => {
+    setShareStatus('authenticating');
+    try {
+      const { data } = await axios.get('/api/auth/facebook/url');
+      const authWindow = window.open(data.url, 'facebook_auth', 'width=600,height=700');
+      
+      if (!authWindow) {
+        alert('Please allow popups for this site to connect your Instagram account.');
+        setShareStatus('idle');
+        return;
+      }
+
+      const handleMessage = async (event: MessageEvent) => {
+        if (event.data?.type === 'FACEBOOK_AUTH_SUCCESS') {
+          window.removeEventListener('message', handleMessage);
+          setIsInstagramConnected(true);
+          fetchInstagramAccounts();
+        }
+      };
+      window.addEventListener('message', handleMessage);
+    } catch (err) {
+      console.error('Facebook login failed', err);
+      setShareStatus('error');
+      setErrorMessage('Failed to initiate Facebook login');
+    }
+  };
+
+  const fetchInstagramAccounts = async () => {
+    setShareStatus('loading_accounts');
+    try {
+      const { data } = await axios.get('/api/instagram/accounts');
+      setInstagramAccounts(data.accounts);
+      if (data.accounts.length === 0) {
+        setShareStatus('error');
+        setErrorMessage('No Instagram Business accounts found');
+      } else if (data.accounts.length === 1) {
+        handleInstagramShare(data.accounts[0].id);
+      } else {
+        setShowAccountSelector(true);
+        setShareStatus('idle');
+      }
+    } catch (err) {
+      console.error('Failed to fetch Instagram accounts', err);
+      setShareStatus('error');
+      setErrorMessage('Failed to fetch Instagram accounts');
+    }
+  };
+
+  const handleInstagramShare = async (accountId: string) => {
+    setShowAccountSelector(false);
+    setIsSharing(true);
+    setShareStatus('publishing');
+    
+    try {
+      const imageUrls = [];
+      
+      // 1. Generate and upload images to temp storage
+      for (let i = 0; i < cards.length; i++) {
+        const node = cardRefs.current[i];
+        if (node) {
           const dataUrl = await toPng(node, { 
             quality: 1, 
-            pixelRatio: 3,
+            pixelRatio: 2, // 2 is enough for IG and faster
             backgroundColor: style.backgroundColor 
           });
-          const link = document.createElement('a');
-          link.download = `social-card-${i + 1}.png`;
-          link.href = dataUrl;
-          link.click();
-        } catch (err) {
-          console.error('Export failed', err);
+          
+          const base64Data = dataUrl.split(',')[1];
+          const mimeType = dataUrl.split(',')[0].split(':')[1].split(';')[0];
+          
+          const { data } = await axios.post('/api/temp-image', {
+            data: base64Data,
+            mimeType
+          });
+          
+          imageUrls.push(data.publicUrl);
         }
       }
+
+      // 2. Publish carousel
+      await axios.post('/api/instagram/publish-carousel', {
+        instagramAccountId: accountId,
+        imageUrls,
+        caption: style.title || 'Created with Social Splitter'
+      });
+
+      setShareStatus('success');
+      setTimeout(() => setShareStatus('idle'), 5000);
+    } catch (err: any) {
+      console.error('Instagram share failed', err);
+      setShareStatus('error');
+      setErrorMessage(err.response?.data?.error || 'Failed to publish to Instagram');
+    } finally {
+      setIsSharing(false);
     }
   };
 
@@ -230,8 +317,68 @@ export default function App() {
         toggleSection={toggleSection}
         handleFeelingLucky={handleFeelingLucky}
         handleExportAll={handleExportAll}
+        handleInstagramShare={() => isInstagramConnected ? fetchInstagramAccounts() : handleFacebookLogin()}
+        isInstagramConnected={isInstagramConnected}
+        handleInstagramConnect={handleFacebookLogin}
+        isSharing={isSharing}
+        shareStatus={shareStatus}
         applyTheme={applyTheme}
       />
+
+      {showAccountSelector && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-6">
+          <div className="bg-white rounded-[32px] w-full max-w-md p-8 shadow-2xl animate-in fade-in zoom-in duration-300">
+            <h3 className="text-2xl font-black uppercase italic tracking-tight mb-6">Select Instagram Account</h3>
+            <div className="space-y-3">
+              {instagramAccounts.map(account => (
+                <button
+                  key={account.id}
+                  onClick={() => handleInstagramShare(account.id)}
+                  className="w-full flex items-center gap-4 p-4 hover:bg-yellow-50 rounded-2xl border-2 border-transparent hover:border-yellow-100 transition-all text-left group"
+                >
+                  <img src={account.profile_picture_url} alt={account.username} className="w-12 h-12 rounded-full border-2 border-white shadow-sm" />
+                  <div>
+                    <div className="font-bold text-gray-900 group-hover:text-yellow-600 transition-colors">@{account.username}</div>
+                    <div className="text-xs text-gray-400">{account.name}</div>
+                  </div>
+                </button>
+              ))}
+            </div>
+            <button 
+              onClick={() => setShowAccountSelector(false)}
+              className="w-full mt-6 py-4 text-gray-400 font-bold uppercase text-xs tracking-widest hover:text-gray-600 transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {shareStatus === 'error' && (
+        <div className="fixed bottom-6 right-6 z-[100] bg-rose-50 border border-rose-100 p-4 rounded-2xl shadow-xl animate-in slide-in-from-right duration-300">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-rose-500 rounded-full flex items-center justify-center text-white font-bold">!</div>
+            <div>
+              <div className="font-bold text-rose-900">Error</div>
+              <div className="text-xs text-rose-600">{errorMessage}</div>
+            </div>
+            <button onClick={() => setShareStatus('idle')} className="ml-4 text-rose-400 hover:text-rose-600">✕</button>
+          </div>
+        </div>
+      )}
+
+      {shareStatus === 'success' && (
+        <div className="fixed bottom-6 right-6 z-[100] bg-emerald-50 border border-emerald-100 p-4 rounded-2xl shadow-xl animate-in slide-in-from-right duration-300">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center text-white font-bold">✓</div>
+            <div>
+              <div className="font-bold text-emerald-900">Success</div>
+              <div className="text-xs text-emerald-600">Published to Instagram!</div>
+            </div>
+            <button onClick={() => setShareStatus('idle')} className="ml-4 text-emerald-400 hover:text-emerald-600">✕</button>
+          </div>
+        </div>
+      )}
 
       <PreviewArea 
         cards={cards}

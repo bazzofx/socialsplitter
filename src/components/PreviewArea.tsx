@@ -1,12 +1,48 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Download, Image as ImageIcon, RefreshCw } from 'lucide-react';
+import { Download, Image as ImageIcon, RefreshCw, Sun } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import { cn } from '../utils/cn';
 import { DecorativeElements } from './DecorativeElements';
 import { Texture } from './texture';
 import { CardStyle } from '../types';
 import { THEMES, TEXTURES } from '../constants';
+import { useTranslation } from '../utils/LanguageContext';
+
+const PetalEffect = () => {
+  const petals = Array.from({ length: 12 });
+  return (
+    <div className="absolute inset-x-0 bottom-0 pointer-events-none overflow-visible z-[100]">
+      {petals.map((_, i) => (
+        <motion.div
+          key={i}
+          initial={{ opacity: 0, scale: 0, x: 0, y: 0, rotate: 0 }}
+          animate={{ 
+            opacity: [0, 1, 1, 0], 
+            scale: [0, 1.2, 1, 0.8], 
+            x: (Math.random() - 0.5) * 400, 
+            y: -Math.random() * 250 - 150,
+            rotate: Math.random() * 720
+          }}
+          transition={{ 
+            duration: 3 + Math.random() * 2, 
+            ease: "circOut",
+            delay: Math.random() * 0.8
+          }}
+          className="absolute left-1/2 -translate-x-1/2"
+        >
+          <div 
+            className="w-3 h-5 bg-yellow-400 rounded-full shadow-lg border border-yellow-500/20" 
+            style={{ 
+              borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%',
+              boxShadow: '0 0 15px rgba(250, 204, 21, 0.4)'
+            }} 
+          />
+        </motion.div>
+      ))}
+    </div>
+  );
+};
 
 interface PreviewAreaProps {
   cards: string[];
@@ -23,6 +59,8 @@ export const PreviewArea = ({
   textareaRefs,
   handleCardEdit
 }: PreviewAreaProps) => {
+  const { t } = useTranslation();
+
   return (
     <main className="flex-1 overflow-y-auto p-12 bg-[#f0f2f5] scroll-smooth no-scrollbar">
       <div className="max-w-5xl mx-auto space-y-16">
@@ -33,12 +71,25 @@ export const PreviewArea = ({
                 <motion.div
                   key={idx}
                   layout
-                  initial={{ opacity: 0, y: 30, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ type: 'spring', damping: 20, stiffness: 100, delay: idx * 0.05 }}
+                  initial={{ opacity: 0, y: 50, scale: 0.8, rotate: -5 }}
+                  animate={{ 
+                    opacity: 1, 
+                    y: 0, 
+                    scale: 1,
+                    rotate: [0, -2, 2, -1, 1, 0]
+                  }}
+                  exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                  transition={{ 
+                    opacity: { duration: 0.4, delay: idx * 0.05 },
+                    y: { type: 'spring', damping: 15, stiffness: 100, delay: idx * 0.05 },
+                    scale: { type: 'spring', damping: 15, stiffness: 100, delay: idx * 0.05 },
+                    rotate: { duration: 0.8, delay: idx * 0.05 + 0.4, ease: "easeInOut" }
+                  }}
                   className="relative group"
                 >
+                  {/* Magical Petal Effect */}
+                  <PetalEffect />
+
                   {/* Card Container with 3:4 Aspect Ratio */}
                   <div
                     ref={(el) => (cardRefs.current[idx] = el)}
@@ -191,7 +242,7 @@ export const PreviewArea = ({
                           link.click();
                         }
                       }}
-                      className="p-3 bg-white rounded-2xl shadow-xl hover:bg-gray-50 text-indigo-600 transition-all active:scale-90"
+                      className="p-3 bg-black rounded-2xl shadow-xl hover:bg-gray-900 text-yellow-400 transition-all active:scale-90 border border-yellow-400/20"
                       title="Download this card"
                     >
                       <Download className="w-5 h-5" />
@@ -208,14 +259,14 @@ export const PreviewArea = ({
               animate={{ scale: 1, opacity: 1 }}
               className="p-10 bg-white rounded-[40px] shadow-2xl shadow-gray-200 border border-gray-100 relative"
             >
-              <ImageIcon className="w-20 h-20 text-indigo-100" />
-              <div className="absolute -bottom-2 -right-2 p-3 bg-indigo-600 rounded-2xl shadow-lg">
-                <RefreshCw className="w-6 h-6 text-white animate-spin-slow" />
+              <Sun className="w-20 h-20 text-yellow-100" />
+              <div className="absolute -bottom-2 -right-2 p-3 bg-yellow-400 rounded-2xl shadow-lg">
+                <RefreshCw className="w-6 h-6 text-black animate-spin-slow" />
               </div>
             </motion.div>
             <div className="text-center space-y-2">
-              <h3 className="text-2xl font-bold text-gray-800">Ready to split?</h3>
-              <p className="text-gray-500 max-w-xs mx-auto">Paste your long-form content in the sidebar to generate beautiful social media cards instantly.</p>
+              <h3 className="text-2xl font-bold text-gray-800">{t('preview_empty_title')}</h3>
+              <p className="text-gray-500 max-w-xs mx-auto">{t('preview_empty_desc')}</p>
             </div>
           </div>
         )}

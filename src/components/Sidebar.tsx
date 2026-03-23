@@ -1,6 +1,6 @@
 import React from 'react';
 import { 
-  Scissors, Home, HelpCircle, Type, Palette, Square, Frame, Sparkles, Download, MoreHorizontal, Layout 
+  Sun, Home, HelpCircle, Type, Palette, Square, Frame, Sparkles, Download, MoreHorizontal, Layout 
 } from 'lucide-react';
 import { cn } from '../utils/cn';
 import { CollapsibleSection } from './CollapsibleSection';
@@ -26,6 +26,11 @@ interface SidebarProps {
   handleFeelingLucky: () => void;
   handleExportAll: () => void;
   applyTheme: (theme: any) => void;
+  handleInstagramShare: () => void;
+  isInstagramConnected: boolean;
+  handleInstagramConnect: () => void;
+  isSharing: boolean;
+  shareStatus: string;
 }
 
 export const Sidebar = ({
@@ -45,69 +50,75 @@ export const Sidebar = ({
   toggleSection,
   handleFeelingLucky,
   handleExportAll,
-  applyTheme
+  applyTheme,
+  handleInstagramShare,
+  isInstagramConnected,
+  handleInstagramConnect,
+  isSharing,
+  shareStatus
 }: SidebarProps) => {
+  console.log('Using monolithic Sidebar');
   const { t, language, setLanguage } = useTranslation();
 
   return (
-    <aside className="w-80 border-r border-gray-200 bg-white flex flex-col overflow-y-auto shrink-0">
-      <div className="p-6 border-b border-gray-100">
+    <aside className="w-80 border-r border-gray-200 bg-white flex flex-col overflow-hidden shrink-0">
+      <div className="p-6 border-b border-gray-100 bg-black">
         <div className="flex items-center justify-between mb-1">
           <div className="flex items-center gap-2">
-            <div className="p-2 bg-indigo-600 rounded-lg shadow-lg shadow-indigo-100">
-              <Scissors className="w-5 h-5 text-white" />
+            <div className="p-2 bg-yellow-400 rounded-lg shadow-lg shadow-yellow-900/20">
+              <Sun className="w-5 h-5 fill-red-400 text-black" />
             </div>
-            <h1 className="text-xl font-bold tracking-tight">{t('app_name')}</h1>
+            <h1 className="text-xl font-bold tracking-tight text-white">{t('app_name')}</h1>
           </div>
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1 bg-gray-50 p-1 rounded-lg border border-gray-100">
+            <div className="flex items-center gap-1 bg-gray-800 p-1 rounded-lg border border-gray-700">
               <button
                 onClick={() => setLanguage('en')}
                 className={cn(
                   "w-6 h-6 flex items-center justify-center rounded transition-all",
-                  language === 'en' ? "bg-white shadow-sm scale-110" : "opacity-40 hover:opacity-100"
+                  language === 'en' ? "bg-gray-700 shadow-sm scale-110" : "opacity-40 hover:opacity-100"
                 )}
                 title="English"
               >
-                <span className="text-sm">🇬🇧</span>
+                <span className="text-sm text-white">🇬🇧</span>
               </button>
               <button
                 onClick={() => setLanguage('pt')}
                 className={cn(
                   "w-6 h-6 flex items-center justify-center rounded transition-all",
-                  language === 'pt' ? "bg-white shadow-sm scale-110" : "opacity-40 hover:opacity-100"
+                  language === 'pt' ? "bg-gray-700 shadow-sm scale-110" : "opacity-40 hover:opacity-100"
                 )}
                 title="Português (Brasil)"
               >
-                <span className="text-sm">🇧🇷</span>
+                <span className="text-sm text-white">🇧🇷</span>
               </button>
             </div>
             <button 
               onClick={() => setShowLanding(true)}
-              className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
+              className="w-12 h-12 flex items-center justify-center text-gray-400 hover:text-yellow-400 hover:bg-gray-800 rounded-lg transition-all"
               title={t('back_to_landing')}
             >
-              <Home className="w-4 h-4" />
+              <Home className="w-6 h-6" />
             </button>
           </div>
         </div>
-        <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">{t('app_subtitle')}</p>
+        <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500">{t('app_subtitle')}</p>
       </div>
 
       <div className="flex-1 overflow-y-auto no-scrollbar">
         {/* Quick Guide */}
         <div className="p-6 pb-0">
-          <section className="p-4 bg-indigo-50 rounded-2xl border border-indigo-100 space-y-2">
-            <div className="flex items-center gap-2 text-indigo-700 font-bold text-xs uppercase tracking-wider">
+          <section className="p-4 bg-yellow-50 rounded-2xl border border-yellow-100 space-y-2">
+            <div className="flex items-center gap-2 text-yellow-700 font-bold text-xs uppercase tracking-wider">
               <HelpCircle className="w-3.5 h-3.5" />
               {t('quick_guide')}
             </div>
-            <p className="text-[11px] text-indigo-600 leading-relaxed">
+            <p className="text-[11px] text-yellow-800 leading-relaxed">
               {t('quick_guide_1')}<br />
               {t('quick_guide_2').split('\\\\').map((part, i, arr) => (
                 <React.Fragment key={i}>
                   {part}
-                  {i < arr.length - 1 && <code className="bg-indigo-100 px-1 rounded font-bold">\\</code>}
+                  {i < arr.length - 1 && <code className="bg-yellow-100 px-1 rounded font-bold">\\</code>}
                 </React.Fragment>
               ))}<br />
               {t('quick_guide_3')}
@@ -128,7 +139,7 @@ export const Sidebar = ({
               <div className="space-y-2">
                 <label className="text-[10px] font-bold uppercase tracking-wider text-gray-400">{t('source_text')}</label>
                 <textarea
-                  className="w-full h-32 p-3 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all resize-none bg-gray-50 font-medium"
+                  className="w-full h-32 p-3 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-yellow-400 focus:border-transparent outline-none transition-all resize-none bg-gray-50 font-medium"
                   placeholder={t('text_placeholder')}
                   value={text}
                   onChange={(e) => setText(e.target.value)}
@@ -142,7 +153,7 @@ export const Sidebar = ({
                     onClick={() => setSplitMode('character')}
                     className={cn(
                       "flex-1 py-1.5 text-xs font-bold rounded-lg transition-all",
-                      splitMode === 'character' ? "bg-white shadow-sm text-indigo-600" : "text-gray-500 hover:text-gray-700"
+                      splitMode === 'character' ? "bg-white shadow-sm text-yellow-600" : "text-gray-500 hover:text-gray-700"
                     )}
                   >
                     {t('auto')}
@@ -151,7 +162,7 @@ export const Sidebar = ({
                     onClick={() => setSplitMode('separator')}
                     className={cn(
                       "flex-1 py-1.5 text-xs font-bold rounded-lg transition-all",
-                      splitMode === 'separator' ? "bg-white shadow-sm text-indigo-600" : "text-gray-500 hover:text-gray-700"
+                      splitMode === 'separator' ? "bg-white shadow-sm text-yellow-600" : "text-gray-500 hover:text-gray-700"
                     )}
                   >
                     {t('manual')}
@@ -162,7 +173,7 @@ export const Sidebar = ({
                   <div className="space-y-2">
                     <div className="flex justify-between text-[10px] font-bold uppercase tracking-wider text-gray-400">
                       <span>{t('char_limit')}</span>
-                      <span className="text-indigo-600 font-mono">{charLimit}</span>
+                      <span className="text-yellow-600 font-mono">{charLimit}</span>
                     </div>
                     <input
                       type="range"
@@ -171,7 +182,7 @@ export const Sidebar = ({
                       step="10"
                       value={charLimit}
                       onChange={(e) => setCharLimit(parseInt(e.target.value))}
-                      className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+                      className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-yellow-400"
                     />
                   </div>
                 ) : (
@@ -181,7 +192,7 @@ export const Sidebar = ({
                       type="text"
                       value={separator}
                       onChange={(e) => setSeparator(e.target.value)}
-                      className="w-full p-2 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none bg-gray-50 font-medium"
+                      className="w-full p-2 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-yellow-400 outline-none bg-gray-50 font-medium"
                       placeholder={t('separator_placeholder')}
                     />
                   </div>
@@ -193,7 +204,7 @@ export const Sidebar = ({
           <div className="px-6 py-2">
             <button
               onClick={handleFeelingLucky}
-              className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl text-xs font-bold uppercase tracking-wider transition-all border border-indigo-100 shadow-sm"
+              className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-yellow-400 hover:bg-yellow-500 text-black rounded-xl text-xs font-bold uppercase tracking-wider transition-all border border-yellow-500 shadow-sm"
             >
               <Sparkles className="w-4 h-4" />
               {t('feeling_lucky')}
@@ -219,7 +230,7 @@ export const Sidebar = ({
                     onClick={() => applyTheme(theme)}
                     className={cn(
                       "h-10 rounded-xl border transition-all flex items-center justify-center text-[10px] font-bold uppercase tracking-tight",
-                      style.theme === theme.name ? "ring-2 ring-indigo-500 border-transparent" : "border-gray-200 hover:border-gray-300"
+                      style.theme === theme.name ? "ring-2 ring-yellow-400 border-transparent" : "border-gray-200 hover:border-gray-300"
                     )}
                     style={{ 
                       background: theme.gradient || theme.bg, 
@@ -241,7 +252,7 @@ export const Sidebar = ({
                       onClick={() => setStyle(s => ({ ...s, gradient: g.value }))}
                       className={cn(
                         "h-8 rounded-lg transition-all border-2",
-                        style.gradient === g.value ? "border-indigo-500 scale-110 shadow-md" : "border-transparent hover:scale-105"
+                        style.gradient === g.value ? "border-yellow-400 scale-110 shadow-md" : "border-transparent hover:scale-105"
                       )}
                       style={{ background: g.value }}
                       title={t(`grad_${g.name.toLowerCase().replace(/ /g, '_')}` as any)}
@@ -255,7 +266,7 @@ export const Sidebar = ({
                 <select
                   value={style.texture}
                   onChange={(e) => setStyle(s => ({ ...s, texture: e.target.value }))}
-                  className="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 text-xs font-medium focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+                  className="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 text-xs font-medium focus:ring-2 focus:ring-yellow-400 focus:border-transparent outline-none transition-all"
                 >
                   {TEXTURES.map((tex) => (
                     <option key={tex.value} value={tex.value}>
@@ -268,7 +279,7 @@ export const Sidebar = ({
                   <div className="space-y-1.5">
                     <div className="flex justify-between text-[9px] font-bold uppercase tracking-wider text-gray-400">
                       <span>{t('texture_opacity')}</span>
-                      <span className="text-indigo-600 font-mono">{Math.round(style.textureOpacity * 100)}%</span>
+                      <span className="text-yellow-600 font-mono">{Math.round(style.textureOpacity * 100)}%</span>
                     </div>
                     <input
                       type="range"
@@ -277,7 +288,7 @@ export const Sidebar = ({
                       step="0.01"
                       value={style.textureOpacity}
                       onChange={(e) => setStyle(s => ({ ...s, textureOpacity: parseFloat(e.target.value) }))}
-                      className="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+                      className="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-yellow-400"
                     />
                   </div>
                 )}
@@ -295,12 +306,18 @@ export const Sidebar = ({
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-gray-400">{t('border_width')}</label>
+                  <div className="flex justify-between text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                    <span>{t('border_width')}</span>
+                    <span className="text-yellow-600 font-mono">{style.borderWidth}px</span>
+                  </div>
                   <input
-                    type="number"
+                    type="range"
+                    min="0"
+                    max="50"
+                    step="1"
                     value={style.borderWidth}
                     onChange={(e) => setStyle(s => ({ ...s, borderWidth: parseInt(e.target.value) }))}
-                    className="w-full p-2 text-xs border border-gray-200 rounded-xl text-center font-bold bg-gray-50"
+                    className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-yellow-400"
                   />
                 </div>
                 <div className="space-y-2">
@@ -328,7 +345,7 @@ export const Sidebar = ({
                       onClick={() => setStyle(s => ({ ...s, borderRadius: r.value }))}
                       className={cn(
                         "flex-1 py-1 text-[10px] font-bold rounded-md transition-all",
-                        style.borderRadius === r.value ? "bg-white shadow-sm text-indigo-600" : "text-gray-500"
+                        style.borderRadius === r.value ? "bg-white shadow-sm text-yellow-600" : "text-gray-500"
                       )}
                     >
                       {r.label.toUpperCase()}
@@ -367,7 +384,7 @@ export const Sidebar = ({
                       step="1"
                       value={style.innerFrameWidth}
                       onChange={(e) => setStyle(s => ({ ...s, innerFrameWidth: parseInt(e.target.value) }))}
-                      className="flex-1 h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+                      className="flex-1 h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-yellow-400"
                     />
                     <span className="text-[10px] font-bold text-gray-500 w-4">{style.innerFrameWidth}</span>
                   </div>
@@ -383,7 +400,7 @@ export const Sidebar = ({
                     step="1"
                     value={style.innerFramePadding}
                     onChange={(e) => setStyle(s => ({ ...s, innerFramePadding: parseInt(e.target.value) }))}
-                    className="flex-1 h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+                    className="flex-1 h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-yellow-400"
                   />
                   <span className="text-[10px] font-bold text-gray-500 w-6">{style.innerFramePadding}px</span>
                 </div>
@@ -411,7 +428,7 @@ export const Sidebar = ({
                     elementSize: Math.floor(Math.random() * 60) + 20,
                     elementSeed: Math.floor(Math.random() * 1000),
                   }))}
-                  className="flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider text-indigo-600 hover:text-indigo-700 transition-colors"
+                  className="flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider text-yellow-600 hover:text-yellow-700 transition-colors"
                 >
                   <Sparkles className="w-3 h-3" />
                   {t('feeling_lucky')}
@@ -431,7 +448,7 @@ export const Sidebar = ({
                         elementQuantity: val !== 'none' ? 5 : 0
                       }));
                     }}
-                    className="w-full p-2 text-xs border border-gray-200 rounded-xl bg-gray-50 font-bold outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full p-2 text-xs border border-gray-200 rounded-xl bg-gray-50 font-bold outline-none focus:ring-2 focus:ring-yellow-400"
                   >
                     {DECORATIVE_ELEMENTS.map(e => (
                       <option key={e.value} value={e.value}>{t(`elem_${e.name.toLowerCase().replace(/ /g, '_')}` as any)}</option>
@@ -458,32 +475,40 @@ export const Sidebar = ({
                       step="0.05"
                       value={style.elementOpacity}
                       onChange={(e) => setStyle(s => ({ ...s, elementOpacity: parseFloat(e.target.value) }))}
-                      className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+                      className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-yellow-400"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
-                    <span className="text-[9px] font-bold uppercase tracking-wider text-gray-400">{t('element_quantity')}</span>
+                    <div className="flex justify-between text-[9px] font-bold uppercase tracking-wider text-gray-400">
+                      <span>{t('element_quantity')}</span>
+                      <span className="text-yellow-600 font-mono">{style.elementQuantity}</span>
+                    </div>
                     <input
-                      type="number"
+                      type="range"
                       min="0"
                       max="100"
+                      step="1"
                       value={style.elementQuantity}
                       onChange={(e) => setStyle(s => ({ ...s, elementQuantity: parseInt(e.target.value) }))}
-                      className="w-full p-1.5 text-xs border border-gray-200 rounded-lg text-center font-bold bg-gray-50"
+                      className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-yellow-400"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <span className="text-[9px] font-bold uppercase tracking-wider text-gray-400">{t('element_size')}</span>
+                    <div className="flex justify-between text-[9px] font-bold uppercase tracking-wider text-gray-400">
+                      <span>{t('element_size')}</span>
+                      <span className="text-yellow-600 font-mono">{style.elementSize}px</span>
+                    </div>
                     <input
-                      type="number"
+                      type="range"
                       min="10"
                       max="400"
+                      step="1"
                       value={style.elementSize}
                       onChange={(e) => setStyle(s => ({ ...s, elementSize: parseInt(e.target.value) }))}
-                      className="w-full p-1.5 text-xs border border-gray-200 rounded-lg text-center font-bold bg-gray-50"
+                      className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-yellow-400"
                     />
                   </div>
                 </div>
@@ -497,7 +522,7 @@ export const Sidebar = ({
                         onClick={() => setStyle(s => ({ ...s, elementPositionMode: mode as any }))}
                         className={cn(
                           "flex-1 py-1.5 rounded-lg text-[9px] font-bold uppercase transition-all",
-                          style.elementPositionMode === mode ? "bg-white shadow-sm text-indigo-600" : "text-gray-500 hover:text-gray-700"
+                          style.elementPositionMode === mode ? "bg-white shadow-sm text-yellow-600" : "text-gray-500 hover:text-gray-700"
                         )}
                       >
                         {t(mode as any)}
@@ -525,7 +550,7 @@ export const Sidebar = ({
                       onClick={() => setStyle(s => ({ ...s, elementRandomRotation: !s.elementRandomRotation }))}
                       className={cn(
                         "w-full py-1.5 rounded-lg text-[9px] font-bold uppercase border transition-all",
-                        style.elementRandomRotation ? "bg-indigo-600 border-indigo-600 text-white" : "border-gray-200 text-gray-500"
+                        style.elementRandomRotation ? "bg-yellow-400 border-yellow-400 text-black" : "border-gray-200 text-gray-500"
                       )}
                     >
                       {style.elementRandomRotation ? 'On' : 'Off'}
@@ -538,7 +563,7 @@ export const Sidebar = ({
                   <select
                     value={style.elementBlendMode}
                     onChange={(e) => setStyle(s => ({ ...s, elementBlendMode: e.target.value }))}
-                    className="w-full p-2 text-xs border border-gray-200 rounded-xl bg-gray-50 font-bold outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full p-2 text-xs border border-gray-200 rounded-xl bg-gray-50 font-bold outline-none focus:ring-2 focus:ring-yellow-400"
                   >
                     {['normal', 'multiply', 'screen', 'overlay', 'soft-light', 'difference'].map(mode => (
                       <option key={mode} value={mode}>{t(mode as any)}</option>
@@ -558,7 +583,7 @@ export const Sidebar = ({
                         onClick={() => setStyle(s => ({ ...s, elementZIndex: opt.value as any }))}
                         className={cn(
                           "flex-1 py-1.5 rounded-lg text-[9px] font-bold uppercase transition-all",
-                          style.elementZIndex === opt.value ? "bg-white shadow-sm text-indigo-600" : "text-gray-500 hover:text-gray-700"
+                          style.elementZIndex === opt.value ? "bg-white shadow-sm text-yellow-600" : "text-gray-500 hover:text-gray-700"
                         )}
                       >
                         {opt.label}
@@ -601,7 +626,7 @@ export const Sidebar = ({
                       theme: 'Custom'
                     }));
                   }}
-                  className="flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider text-indigo-600 hover:text-indigo-700 transition-colors"
+                  className="flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider text-yellow-600 hover:text-yellow-700 transition-colors"
                 >
                   <Sparkles className="w-3 h-3" />
                   {t('feeling_lucky')}
@@ -611,7 +636,7 @@ export const Sidebar = ({
                 <select
                   value={style.fontFamily}
                   onChange={(e) => setStyle(s => ({ ...s, fontFamily: e.target.value }))}
-                  className="w-full p-2.5 text-xs border border-gray-200 rounded-xl bg-gray-50 font-bold outline-none focus:ring-2 focus:ring-indigo-500 transition-all appearance-none cursor-pointer"
+                  className="w-full p-2.5 text-xs border border-gray-200 rounded-xl bg-gray-50 font-bold outline-none focus:ring-2 focus:ring-yellow-400 transition-all appearance-none cursor-pointer"
                   style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 10px center', backgroundSize: '16px' }}
                 >
                   {FONTS.map(f => (
@@ -624,12 +649,18 @@ export const Sidebar = ({
 
                 <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-gray-400">{t('font_size')}</label>
+                  <div className="flex justify-between text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                    <span>{t('font_size')}</span>
+                    <span className="text-yellow-600 font-mono">{style.fontSize}px</span>
+                  </div>
                   <input
-                    type="number"
+                    type="range"
+                    min="12"
+                    max="120"
+                    step="1"
                     value={style.fontSize}
                     onChange={(e) => setStyle(s => ({ ...s, fontSize: parseInt(e.target.value) }))}
-                    className="w-full p-2 text-xs border border-gray-200 rounded-xl text-center font-bold bg-gray-50"
+                    className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-yellow-400"
                   />
                 </div>
                 <div className="space-y-2">
@@ -645,12 +676,18 @@ export const Sidebar = ({
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-gray-400">{t('padding')}</label>
+                  <div className="flex justify-between text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                    <span>{t('padding')}</span>
+                    <span className="text-yellow-600 font-mono">{style.padding}px</span>
+                  </div>
                   <input
-                    type="number"
+                    type="range"
+                    min="0"
+                    max="100"
+                    step="1"
                     value={style.padding}
                     onChange={(e) => setStyle(s => ({ ...s, padding: parseInt(e.target.value) }))}
-                    className="w-full p-2 text-xs border border-gray-200 rounded-xl text-center font-bold bg-gray-50"
+                    className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-yellow-400"
                   />
                 </div>
               </div>
@@ -664,7 +701,7 @@ export const Sidebar = ({
                       onClick={() => setStyle(s => ({ ...s, textAlign: align as any }))}
                       className={cn(
                         "flex-1 py-1.5 rounded-lg text-[10px] font-bold uppercase transition-all",
-                        style.textAlign === align ? "bg-white shadow-sm text-indigo-600" : "text-gray-500 hover:text-gray-700"
+                        style.textAlign === align ? "bg-white shadow-sm text-yellow-600" : "text-gray-500 hover:text-gray-700"
                       )}
                     >
                       {t(align as any)}
@@ -683,7 +720,7 @@ export const Sidebar = ({
                     step="0.5"
                     value={style.letterSpacing}
                     onChange={(e) => setStyle(s => ({ ...s, letterSpacing: parseFloat(e.target.value) }))}
-                    className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+                    className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-yellow-400"
                   />
                 </div>
                 <div className="space-y-2">
@@ -695,7 +732,7 @@ export const Sidebar = ({
                     step="0.1"
                     value={style.lineHeight}
                     onChange={(e) => setStyle(s => ({ ...s, lineHeight: parseFloat(e.target.value) }))}
-                    className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+                    className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-yellow-400"
                   />
                 </div>
               </div>
@@ -706,7 +743,7 @@ export const Sidebar = ({
                   onClick={() => setStyle(s => ({ ...s, textShadow: !s.textShadow }))}
                   className={cn(
                     "w-10 h-5 rounded-full transition-all relative",
-                    style.textShadow ? "bg-indigo-600" : "bg-gray-300"
+                    style.textShadow ? "bg-yellow-400" : "bg-gray-300"
                   )}
                 >
                   <div className={cn(
@@ -732,7 +769,7 @@ export const Sidebar = ({
                   type="text"
                   value={style.title}
                   onChange={(e) => setStyle(s => ({ ...s, title: e.target.value }))}
-                  className="w-full p-2 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none bg-gray-50 font-medium"
+                  className="w-full p-2 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-yellow-400 outline-none bg-gray-50 font-medium"
                   placeholder={t('title_placeholder')}
                 />
                 <div className="flex gap-1 p-1 bg-gray-100 rounded-xl">
@@ -742,7 +779,7 @@ export const Sidebar = ({
                       onClick={() => setStyle(s => ({ ...s, titleAlign: align as any }))}
                       className={cn(
                         "flex-1 py-1 rounded-lg text-[9px] font-bold uppercase transition-all",
-                        style.titleAlign === align ? "bg-white shadow-sm text-indigo-600" : "text-gray-500 hover:text-gray-700"
+                        style.titleAlign === align ? "bg-white shadow-sm text-yellow-600" : "text-gray-500 hover:text-gray-700"
                       )}
                     >
                       {t(align as any)}
@@ -767,7 +804,7 @@ export const Sidebar = ({
                   type="text"
                   value={style.footer}
                   onChange={(e) => setStyle(s => ({ ...s, footer: e.target.value }))}
-                  className="w-full p-2 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none bg-gray-50 font-medium"
+                  className="w-full p-2 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-yellow-400 outline-none bg-gray-50 font-medium"
                   placeholder={t('footer_placeholder')}
                 />
                 <div className="flex gap-1 p-1 bg-gray-100 rounded-xl">
@@ -777,7 +814,7 @@ export const Sidebar = ({
                       onClick={() => setStyle(s => ({ ...s, footerAlign: align as any }))}
                       className={cn(
                         "flex-1 py-1 rounded-lg text-[9px] font-bold uppercase transition-all",
-                        style.footerAlign === align ? "bg-white shadow-sm text-indigo-600" : "text-gray-500 hover:text-gray-700"
+                        style.footerAlign === align ? "bg-white shadow-sm text-yellow-600" : "text-gray-500 hover:text-gray-700"
                       )}
                     >
                       {t(align as any)}
@@ -791,7 +828,7 @@ export const Sidebar = ({
                   onClick={() => setStyle(s => ({ ...s, showPageNumber: !s.showPageNumber }))}
                   className={cn(
                     "w-10 h-5 rounded-full transition-all relative",
-                    style.showPageNumber ? "bg-indigo-600" : "bg-gray-300"
+                    style.showPageNumber ? "bg-yellow-400" : "bg-gray-300"
                   )}
                 >
                   <div className={cn(
@@ -802,29 +839,22 @@ export const Sidebar = ({
               </div>
             </div>
           </CollapsibleSection>
-
-          {/* Export */}
-          <CollapsibleSection
-            title={t('export_options')}
-            icon={Download}
-            isOpen={expandedSections.export}
-            onToggle={() => toggleSection('export')}
-          >
-            <div className="space-y-4">
-              <button
-                onClick={handleExportAll}
-                disabled={cards.length === 0}
-                className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-300 text-white rounded-2xl font-bold flex items-center justify-center gap-3 transition-all shadow-lg shadow-indigo-200 active:scale-[0.98]"
-              >
-                <Download className="w-5 h-5" />
-                {t('export_cards', { count: cards.length })}
-              </button>
-              <p className="text-[10px] text-center text-gray-400 font-medium">
-                {t('export_description')}
-              </p>
-            </div>
-          </CollapsibleSection>
         </div>
+      </div>
+
+      {/* Fixed Bottom Export Section */}
+      <div className="p-6 border-t border-gray-100 bg-white">
+        <button
+          onClick={handleExportAll}
+          disabled={cards.length === 0}
+          className="w-full py-4 bg-black hover:bg-gray-900 disabled:bg-gray-300 text-yellow-400 rounded-2xl font-bold flex items-center justify-center gap-3 transition-all shadow-lg shadow-gray-200 active:scale-[0.98]"
+        >
+          <Download className="w-5 h-5" />
+          {t('export_cards', { count: cards.length })}
+        </button>
+        <p className="text-[10px] text-center text-gray-400 font-medium mt-3">
+          {t('export_description')}
+        </p>
       </div>
     </aside>
   );

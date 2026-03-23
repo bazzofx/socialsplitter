@@ -1,5 +1,5 @@
 import React from 'react';
-import { Download, Scissors, ChevronRight, ChevronLeft, Sparkles } from 'lucide-react';
+import { Download, Sun, ChevronRight, ChevronLeft, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card } from './Card';
 import { CardStyle } from '../types';
@@ -32,14 +32,14 @@ export const CardPreview = ({
     )}>
       {/* Background Decorative Elements */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-20">
-        <div className="absolute top-20 left-20 w-64 h-64 bg-indigo-200 rounded-full blur-3xl" />
+        <div className="absolute top-20 left-20 w-64 h-64 bg-yellow-100 rounded-full blur-3xl" />
         <div className="absolute bottom-20 right-20 w-96 h-96 bg-violet-200 rounded-full blur-3xl" />
       </div>
 
       {!isSidebarOpen && (
         <button 
           onClick={() => setIsSidebarOpen(true)}
-          className="fixed left-6 top-6 p-4 bg-white border-2 border-indigo-600 text-indigo-600 rounded-2xl shadow-xl hover:bg-indigo-600 hover:text-white transition-all z-40 group active:scale-95"
+          className="fixed left-6 top-6 p-4 bg-white border-2 border-yellow-400 text-black rounded-2xl shadow-xl hover:bg-yellow-400 transition-all z-40 group active:scale-95"
         >
           <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
         </button>
@@ -91,10 +91,10 @@ export const CardPreview = ({
             >
               <div className="relative inline-block">
                 <div className="w-32 h-32 bg-white border-4 border-dashed border-gray-200 rounded-3xl flex items-center justify-center mx-auto animate-pulse">
-                  <Scissors className="w-12 h-12 text-gray-300" />
+                  <Sun className="w-12 h-12 text-yellow-400" />
                 </div>
-                <div className="absolute -top-4 -right-4 w-12 h-12 bg-indigo-50 rounded-full flex items-center justify-center animate-bounce">
-                  <Sparkles className="w-6 h-6 text-indigo-400" />
+                <div className="absolute -top-4 -right-4 w-12 h-12 bg-yellow-50 rounded-full flex items-center justify-center animate-bounce">
+                  <Sparkles className="w-6 h-6 text-yellow-500" />
                 </div>
               </div>
               <div className="space-y-3">
@@ -105,7 +105,7 @@ export const CardPreview = ({
               </div>
               <button 
                 onClick={() => setIsSidebarOpen(true)}
-                className="px-8 py-4 bg-indigo-600 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-200 active:scale-95"
+                className="px-8 py-4 bg-yellow-400 text-black rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-yellow-500 transition-all shadow-xl shadow-yellow-900/10 active:scale-95"
               >
                 Open Editor
               </button>

@@ -4,7 +4,7 @@ import { translations, Language, TranslationKey } from './translations';
 interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
-  t: (key: TranslationKey) => string;
+  t: (key: TranslationKey, variables?: Record<string, any>) => string;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -12,8 +12,16 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [language, setLanguage] = useState<Language>('en');
 
-  const t = (key: TranslationKey): string => {
-    return translations[language][key] || translations['en'][key] || key;
+  const t = (key: TranslationKey, variables?: Record<string, any>): string => {
+    let text = translations[language][key] || translations['en'][key] || key;
+    
+    if (variables) {
+      Object.entries(variables).forEach(([k, v]) => {
+        text = text.replace(`{${k}}`, String(v));
+      });
+    }
+    
+    return text;
   };
 
   return (

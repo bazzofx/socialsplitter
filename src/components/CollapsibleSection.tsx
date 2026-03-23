@@ -29,7 +29,7 @@ export const CollapsibleSection = ({
         <div className="flex items-center gap-3">
           <div className={cn(
             "p-1.5 rounded-lg transition-colors",
-            isOpen ? "bg-indigo-100 text-indigo-600" : "bg-gray-100 text-gray-500 group-hover:bg-gray-200"
+            isOpen ? "bg-yellow-400 text-black" : "bg-gray-100 text-gray-500 group-hover:bg-gray-200"
           )}>
             <Icon className="w-4 h-4" />
           </div>
@@ -40,7 +40,7 @@ export const CollapsibleSection = ({
             {title}
           </span>
           {badge !== undefined && (
-            <span className="px-1.5 py-0.5 rounded-full bg-indigo-50 text-indigo-600 text-[10px] font-bold">
+            <span className="px-1.5 py-0.5 rounded-full bg-yellow-100 text-black text-[10px] font-bold">
               {badge}
             </span>
           )}
