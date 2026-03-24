@@ -24,7 +24,7 @@ export const CollapsibleSection = ({
     <div className="border-b border-gray-100 last:border-0">
       <button
         onClick={onToggle}
-        className="w-full py-2 lg:py-4 px-4 lg:px-6 flex items-center justify-between hover:bg-gray-50 transition-colors group"
+        className="w-full py-4 px-6 flex items-center justify-between hover:bg-gray-50 transition-colors group"
       >
         <div className="flex items-center gap-3">
           <div className={cn(
@@ -60,7 +60,7 @@ export const CollapsibleSection = ({
             transition={{ duration: 0.2, ease: 'easeInOut' }}
             className="overflow-hidden"
           >
-            <div className="px-4 lg:px-6 pb-4 lg:pb-6 space-y-2 lg:space-y-4">
+            <div className="px-6 pb-6 space-y-4">
               {children}
             </div>
           </motion.div>

@@ -69,7 +69,6 @@ export default function App() {
 
   const [showLanding, setShowLanding] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [isCollapsed, setIsCollapsed] = useState(false);
 
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     content: true,
@@ -349,8 +348,6 @@ export default function App() {
         isSharing={isSharing}
         shareStatus={shareStatus}
         applyTheme={applyTheme}
-        isCollapsed={isCollapsed}
-        setIsCollapsed={setIsCollapsed}
       />
 
       {showAccountSelector && (
@@ -415,13 +412,11 @@ export default function App() {
       <PreviewArea 
         isSidebarOpen={isSidebarOpen}
         setIsSidebarOpen={setIsSidebarOpen}
-        setShowLanding={setShowLanding}
         cards={cards}
         style={style}
         cardRefs={cardRefs}
         textareaRefs={textareaRefs}
         handleCardEdit={handleCardEdit}
-        isCollapsed={isCollapsed}
       />
 
       <style dangerouslySetInnerHTML={{ __html: `
