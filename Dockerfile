@@ -1,33 +1,19 @@
-# Use Ubuntu as base image
-FROM ubuntu:20.04
-
-# Set environment variables to avoid interactive prompts
-ENV DEBIAN_FRONTEND=noninteractive
-
-# Update system and install dependencies (Git, Curl, Node.js, Nginx, Certbot)
-RUN apt update -y && apt upgrade -y  2>/dev/null
-# Services for troubleshooting
-RUN apt install nano systemctl net-tools -y
-#Install Git
-RUN apt install git -y
-#Install NextJS + Latest Node Versions
-RUN apt install curl -y
-RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
-RUN apt-get install nodejs -y
-RUN node -v && npm -v
+FROM node:22.14.0-bullseye-slim
 
 
-# Clone the repository
-RUN git clone https://github.com/bazzofx/socialsplitter.git /app
-
-# Set working directory
 WORKDIR /app
 
-# Install npm dependencies
-RUN npm install --force  2>/dev/null
+# Install build tools for native modules
+RUN apt-get update && apt-get install -y python3 g++ make git curl \
+    && rm -rf /var/lib/apt/lists/*
 
-# Expose necessary ports
+COPY package*.json ./
+
+RUN npm ci --force
+
+COPY . .
+
 EXPOSE 3099
 
-# Define startup script to start both Nginx and the app
-CMD  npm run dev
+# Start dev server reliably
+CMD ["npx", "tsx", "server.ts"]
