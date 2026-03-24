@@ -10,6 +10,7 @@ import { Sidebar } from './components/Sidebar';
 import { PreviewArea } from './components/PreviewArea';
 import { CardStyle, SplitMode } from './types';
 import { THEMES, FONTS, GRADIENTS, DECORATIVE_ELEMENTS, TEXTURES } from './constants';
+import { X } from 'lucide-react';
 import axios from 'axios';
 
 export default function App() {
@@ -67,6 +68,7 @@ export default function App() {
   });
 
   const [showLanding, setShowLanding] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     content: true,
@@ -134,7 +136,28 @@ export default function App() {
   };
 
   const handleExportAll = async () => {
-    // ... existing export logic ...
+    if (cards.length === 0) return;
+    
+    for (let i = 0; i < cards.length; i++) {
+      const node = cardRefs.current[i];
+      if (node) {
+        try {
+          const dataUrl = await toPng(node, { 
+            pixelRatio: 3, 
+            backgroundColor: style.backgroundColor,
+            cacheBust: true 
+          });
+          const link = document.createElement('a');
+          link.download = `social-card-${i + 1}.png`;
+          link.href = dataUrl;
+          link.click();
+          // Small delay to avoid browser blocking multiple downloads
+          await new Promise(resolve => setTimeout(resolve, 200));
+        } catch (err) {
+          console.error(`Failed to export card ${i + 1}`, err);
+        }
+      }
+    }
   };
 
   const handleFacebookLogin = async () => {
@@ -299,8 +322,10 @@ export default function App() {
   }
 
   return (
-    <div className="flex h-screen bg-[#f8f9fa] text-[#1a1a1a] font-sans overflow-hidden">
+    <div className="flex h-screen bg-[#f8f9fa] text-[#1a1a1a] font-sans overflow-hidden relative">
       <Sidebar 
+        isSidebarOpen={isSidebarOpen}
+        setIsSidebarOpen={setIsSidebarOpen}
         setShowLanding={setShowLanding}
         text={text}
         setText={setText}
@@ -362,7 +387,9 @@ export default function App() {
               <div className="font-bold text-rose-900">Error</div>
               <div className="text-xs text-rose-600">{errorMessage}</div>
             </div>
-            <button onClick={() => setShareStatus('idle')} className="ml-4 text-rose-400 hover:text-rose-600">✕</button>
+            <button onClick={() => setShareStatus('idle')} className="ml-4 text-rose-400 hover:text-rose-600">
+              <X className="w-8 h-8" />
+            </button>
           </div>
         </div>
       )}
@@ -375,12 +402,16 @@ export default function App() {
               <div className="font-bold text-emerald-900">Success</div>
               <div className="text-xs text-emerald-600">Published to Instagram!</div>
             </div>
-            <button onClick={() => setShareStatus('idle')} className="ml-4 text-emerald-400 hover:text-emerald-600">✕</button>
+            <button onClick={() => setShareStatus('idle')} className="ml-4 text-emerald-400 hover:text-emerald-600">
+              <X className="w-8 h-8" />
+            </button>
           </div>
         </div>
       )}
 
       <PreviewArea 
+        isSidebarOpen={isSidebarOpen}
+        setIsSidebarOpen={setIsSidebarOpen}
         cards={cards}
         style={style}
         cardRefs={cardRefs}

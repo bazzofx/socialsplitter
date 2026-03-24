@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Download, Image as ImageIcon, RefreshCw, Sun } from 'lucide-react';
+import { Download, Image as ImageIcon, RefreshCw, Sun, Menu } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import { cn } from '../utils/cn';
 import { DecorativeElements } from './DecorativeElements';
@@ -45,6 +45,8 @@ const PetalEffect = () => {
 };
 
 interface PreviewAreaProps {
+  isSidebarOpen: boolean;
+  setIsSidebarOpen: (val: boolean) => void;
   cards: string[];
   style: CardStyle;
   cardRefs: React.MutableRefObject<(HTMLDivElement | null)[]>;
@@ -53,6 +55,8 @@ interface PreviewAreaProps {
 }
 
 export const PreviewArea = ({
+  isSidebarOpen,
+  setIsSidebarOpen,
   cards,
   style,
   cardRefs,
@@ -62,8 +66,18 @@ export const PreviewArea = ({
   const { t } = useTranslation();
 
   return (
-    <main className="flex-1 overflow-y-auto p-12 bg-[#f0f2f5] scroll-smooth no-scrollbar">
-      <div className="max-w-5xl mx-auto space-y-16">
+    <main className="flex-1 overflow-y-auto p-4 md:p-12 bg-[#f0f2f5] scroll-smooth no-scrollbar relative">
+      {/* Mobile Menu Button */}
+      {!isSidebarOpen && (
+        <button
+          onClick={() => setIsSidebarOpen(true)}
+          className="fixed top-4 left-4 z-30 p-3 bg-black text-yellow-400 rounded-2xl shadow-xl lg:hidden hover:scale-110 active:scale-95 transition-all"
+        >
+          <Menu className="w-6 h-6" />
+        </button>
+      )}
+
+      <div className="max-w-5xl mx-auto space-y-16 mt-12 lg:mt-0">
         {cards.length > 0 ? (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 justify-items-center pb-20">
             <AnimatePresence mode="popLayout">
@@ -95,8 +109,8 @@ export const PreviewArea = ({
                     ref={(el) => (cardRefs.current[idx] = el)}
                     className="relative overflow-hidden shadow-[0_32px_64px_-12px_rgba(0,0,0,0.15)] transition-all duration-500 group-hover:shadow-[0_48px_80px_-12px_rgba(0,0,0,0.2)]"
                     style={{
-                      width: '400px',
-                      height: '533px', // 3:4 Ratio (400 * 4/3 = 533.33)
+                      width: 'min(400px, 90vw)',
+                      aspectRatio: '3/4',
                       background: style.gradient || (style.customGradient 
                         ? `linear-gradient(${style.gradientAngle}deg, ${style.backgroundColor} 0%, ${style.gradientColor2} 100%)`
                         : THEMES.find(t => t.name === style.theme)?.gradient || style.backgroundColor),

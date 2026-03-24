@@ -1,6 +1,6 @@
 import React from 'react';
 import { 
-  Sun, Home, HelpCircle, Type, Palette, Square, Frame, Sparkles, Download, MoreHorizontal, Layout 
+  Sun, Home, HelpCircle, Type, Palette, Square, Frame, Sparkles, Download, MoreHorizontal, Layout, X 
 } from 'lucide-react';
 import { cn } from '../utils/cn';
 import { CollapsibleSection } from './CollapsibleSection';
@@ -9,6 +9,8 @@ import { THEMES, GRADIENTS, FONTS, DECORATIVE_ELEMENTS, TEXTURES } from '../cons
 import { useTranslation } from '../utils/LanguageContext';
 
 interface SidebarProps {
+  isSidebarOpen: boolean;
+  setIsSidebarOpen: (val: boolean) => void;
   setShowLanding: (val: boolean) => void;
   text: string;
   setText: (val: string) => void;
@@ -34,6 +36,8 @@ interface SidebarProps {
 }
 
 export const Sidebar = ({
+  isSidebarOpen,
+  setIsSidebarOpen,
   setShowLanding,
   text,
   setText,
@@ -61,57 +65,74 @@ export const Sidebar = ({
   const { t, language, setLanguage } = useTranslation();
 
   return (
-    <aside className="w-80 border-r border-gray-200 bg-white flex flex-col overflow-hidden shrink-0">
-      <div className="p-6 border-b border-gray-100 bg-black">
-        <div className="flex items-center justify-between mb-1">
-          <div className="flex items-center gap-2">
-            <div className="p-2 bg-yellow-400 rounded-lg shadow-lg shadow-yellow-900/20">
-              <Sun className="w-5 h-5 fill-red-400 text-black" />
-            </div>
-            <h1 className="text-xl font-bold tracking-tight text-white">{t('app_name')}</h1>
+    <>
+      {/* Mobile Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden backdrop-blur-sm"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      <aside className={cn(
+        "fixed lg:static inset-y-0 left-0 z-50 w-80 border-r border-gray-200 bg-white flex flex-col overflow-hidden shrink-0 transition-transform duration-300 ease-in-out",
+        isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0 lg:w-0 lg:border-none"
+      )}>
+        <div className="p-6 border-b border-gray-100 bg-black relative flex flex-col gap-2">
+          <div className="flex items-center justify-between">
+            <button 
+              onClick={() => setShowLanding(true)}
+              className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+            >
+              <div className="p-2 bg-yellow-400 rounded-lg shadow-lg shadow-yellow-900/20">
+                <Sun className="w-5 h-5 fill-red-400 text-black" />
+              </div>
+              <h1 className="text-xl font-bold tracking-tight text-white">{t('app_name')}</h1>
+            </button>
+
+            <button 
+              onClick={() => setIsSidebarOpen(false)}
+              className="p-2 text-gray-400 hover:text-white lg:hidden transition-colors"
+            >
+              <X className="w-10 h-10" />
+            </button>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1 bg-gray-800 p-1 rounded-lg border border-gray-700">
+
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1 p-1.5 rounded-xl border">
               <button
                 onClick={() => setLanguage('en')}
                 className={cn(
-                  "w-6 h-6 flex items-center justify-center rounded transition-all",
-                  language === 'en' ? "bg-gray-700 shadow-sm scale-110" : "opacity-40 hover:opacity-100"
+                  "w-8 h-8 flex items-center justify-center rounded-lg transition-all",
+                  language === 'en' ? "shadow-sm scale-110" : "opacity-40 hover:opacity-100"
                 )}
                 title="English"
               >
-                      <img 
-                src="/assets/uk_flag.png" 
-                alt="UK flag" 
-                className="w-6 h-6 object-contain"
-              />
+                <img 
+                  src="/assets/uk_flag.png" 
+                  alt="UK flag" 
+                  className="w-6 h-6 object-contain"
+                />
               </button>
               <button
                 onClick={() => setLanguage('pt')}
                 className={cn(
-                  "w-6 h-6 flex items-center justify-center rounded transition-all",
-                  language === 'pt' ? "bg-gray-700 shadow-sm scale-110" : "opacity-40 hover:opacity-100"
+                  "w-8 h-8 flex items-center justify-center rounded-lg transition-all",
+                  language === 'pt' ? "shadow-sm scale-110" : "opacity-40 hover:opacity-100"
                 )}
                 title="Português (Brasil)"
               >
-              <img 
-                src="/assets/brazil_flag.png" 
-                alt="Brazil flag" 
-                className="w-6 h-6 object-contain"
-              />
+                <img 
+                  src="/assets/brazil_flag.png" 
+                  alt="Brazil flag" 
+                  className="w-6 h-6 object-contain"
+                />
               </button>
             </div>
-            <button 
-              onClick={() => setShowLanding(true)}
-              className="w-12 h-12 flex items-center justify-center text-gray-400 hover:text-yellow-400 hover:bg-gray-800 rounded-lg transition-all"
-              title={t('back_to_landing')}
-            >
-              <Home className="w-6 h-6" />
-            </button>
           </div>
+
+          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500">{t('app_subtitle')}</p>
         </div>
-        <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500">{t('app_subtitle')}</p>
-      </div>
 
       <div className="flex-1 overflow-y-auto no-scrollbar">
         {/* Quick Guide */}
@@ -855,15 +876,16 @@ export const Sidebar = ({
         <button
           onClick={handleExportAll}
           disabled={cards.length === 0}
-          className="w-full py-4 bg-black hover:bg-gray-900 disabled:bg-gray-300 text-yellow-400 rounded-2xl font-bold flex items-center justify-center gap-3 transition-all shadow-lg shadow-gray-200 active:scale-[0.98]"
+          className="w-full py-4 bg-black hover:bg-gray-900 disabled:bg-gray-300 text-yellow-400 rounded-2xl font-bold flex items-center justify-center gap-3 transition-all shadow-lg shadow-gray-200 active:scale-[0.98] hover:shadow-xl hover:-translate-y-0.5"
         >
           <Download className="w-5 h-5" />
           {t('export_cards', { count: cards.length })}
         </button>
-        <p className="text-[10px] text-center text-black-400 font-medium mt-3">
+        <p className="text-[10px] text-center text-gray-400 font-medium mt-3">
           {t('export_description')}
         </p>
       </div>
     </aside>
+    </>
   );
 };

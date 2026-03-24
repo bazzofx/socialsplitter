@@ -50,7 +50,7 @@ export const LandingPage = ({ onStart }: { onStart: () => void }) => {
             <span>{t('app_name')}</span>
           </div>
           
-          <h1 className="text-6xl lg:text-8xl font-black tracking-tighter leading-[0.85] uppercase italic">
+          <h1 className="text-4xl sm:text-6xl lg:text-8xl font-black tracking-tighter leading-[0.85] uppercase italic">
             {t('hero_title_1')} <br />
             {t('hero_title_2')} <br />
             <span className="text-yellow-500">{t('hero_title_3')}</span>
