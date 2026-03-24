@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Download, Image as ImageIcon, RefreshCw, Sun } from 'lucide-react';
+import { Download, Image as ImageIcon, RefreshCw, Sun, Menu, Home } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import { cn } from '../utils/cn';
 import { DecorativeElements } from './DecorativeElements';
@@ -45,27 +45,49 @@ const PetalEffect = () => {
 };
 
 interface PreviewAreaProps {
+  isSidebarOpen: boolean;
+  setIsSidebarOpen: (val: boolean) => void;
   cards: string[];
   style: CardStyle;
   cardRefs: React.MutableRefObject<(HTMLDivElement | null)[]>;
   textareaRefs: React.MutableRefObject<(HTMLTextAreaElement | null)[]>;
   handleCardEdit: (idx: number, newContent: string) => void;
+  setShowLanding: (val: boolean) => void;
+  isCollapsed: boolean;
 }
 
 export const PreviewArea = ({
+  isSidebarOpen,
+  setIsSidebarOpen,
   cards,
   style,
   cardRefs,
   textareaRefs,
-  handleCardEdit
+  handleCardEdit,
+  setShowLanding,
+  isCollapsed
 }: PreviewAreaProps) => {
   const { t } = useTranslation();
 
   return (
-    <main className="flex-1 overflow-y-auto p-12 bg-[#f0f2f5] scroll-smooth no-scrollbar">
-      <div className="max-w-5xl mx-auto space-y-16">
+    <main className={cn(
+      "flex-1 overflow-y-auto p-4 md:p-12 bg-[#f0f2f5] scroll-smooth no-scrollbar relative transition-all duration-300",
+      isSidebarOpen ? (isCollapsed ? "max-lg:pb-[100px]" : "max-lg:pb-[50vh]") : "max-lg:pb-10"
+    )}>
+      {/* Mobile Home Button */}
+      <button 
+        onClick={() => setShowLanding(true)}
+        className="lg:hidden fixed top-6 left-6 z-40 p-3 bg-white/80 backdrop-blur-md rounded-2xl shadow-lg border border-white/20 text-gray-800 active:scale-90 transition-all"
+        title="Return to Home"
+      >
+        <Home className="w-6 h-6" />
+      </button>
+
+      {/* Mobile Menu Button - Removed as requested */}
+
+      <div className="max-w-5xl mx-auto space-y-8 lg:space-y-16 mt-4 lg:mt-0">
         {cards.length > 0 ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 justify-items-center pb-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 justify-items-center pb-12 lg:pb-20">
             <AnimatePresence mode="popLayout">
               {cards.map((content, idx) => (
                 <motion.div
@@ -93,10 +115,10 @@ export const PreviewArea = ({
                   {/* Card Container with 3:4 Aspect Ratio */}
                   <div
                     ref={(el) => (cardRefs.current[idx] = el)}
-                    className="relative overflow-hidden shadow-[0_32px_64px_-12px_rgba(0,0,0,0.15)] transition-all duration-500 group-hover:shadow-[0_48px_80px_-12px_rgba(0,0,0,0.2)]"
+                    className="relative overflow-hidden shadow-[0_32px_64px_-12px_rgba(0,0,0,0.15)] transition-all duration-500 group-hover:shadow-[0_48px_80px_-12px_rgba(0,0,0,0.2)] max-lg:scale-[0.65] max-lg:origin-top"
                     style={{
-                      width: '400px',
-                      height: '533px', // 3:4 Ratio (400 * 4/3 = 533.33)
+                      width: 'min(400px, 90vw)',
+                      aspectRatio: '3/4',
                       background: style.gradient || (style.customGradient 
                         ? `linear-gradient(${style.gradientAngle}deg, ${style.backgroundColor} 0%, ${style.gradientColor2} 100%)`
                         : THEMES.find(t => t.name === style.theme)?.gradient || style.backgroundColor),

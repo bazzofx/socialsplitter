@@ -367,6 +367,8 @@ export const translations = {
     none: "None",
     preview_empty_title: "Ready to split?",
     preview_empty_desc: "Paste your long-form content in the sidebar to generate beautiful social media cards instantly.",
+    tap_to_expand: "Tap to expand settings",
+    tap_to_collapse: "Tap to collapse",
   },
   pt: {
     // Landing Page
@@ -736,6 +738,8 @@ export const translations = {
     none: "Nenhum",
     preview_empty_title: "Pronto para dividir?",
     preview_empty_desc: "Cole seu conteúdo longo na barra lateral para gerar belos cartões para redes sociais instantaneamente.",
+    tap_to_expand: "Toque para expandir configurações",
+    tap_to_collapse: "Toque para recolher",
   }
 };
 
